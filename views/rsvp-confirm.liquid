@@ -1,0 +1,64 @@
+{% layout "layouts/base" %}
+
+{% block title %}RSVP{% endblock %}
+
+{% block content %}
+  <h1>Will you be there?</h1>
+  <form x-data="{
+    formState: {{ formState | stringifyObject }},
+    addGuest() {
+      this.formState.guests.push({ firstName: '', lastName: '' });
+    },
+    removeGuest(index) {
+      this.formState.guests.splice(index, 1);
+    }
+  }" method="post">
+    <section>
+      <h2>Attendance</h2>
+      <p>Let us know if you'll be able to make it.</p>
+      <div>
+        <label for="attending">Will you be attending?</label>
+        <select id="attending" name="attending" x-model.boolean="formState.attending">
+          <option value="true">Yes</option>
+          <option value="false">No</option>
+        </select>
+      </div>
+    </section>
+    <template x-if="formState.attending">
+      <section>
+        <h2>Contact information</h2>
+        <p>We'll use this information to keep you up-to-date on the wedding.</p>
+        <div>
+          <label for="email">Email</label>
+          <input id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required>
+        </div>
+      </section>
+    </template>
+    <template x-if="formState.attending">
+      <section>
+        <h2>Guests</h2>
+        <p>Add all the attending guests here, yourself included.</p>
+        <ul>
+          <template x-for="(guest, index) in formState.guests">
+            <li>
+              <template x-if="guest.id">
+                <input type="hidden" :name="`guests[${index}][id]`" :value="guest.id">
+              </template>
+              <div>
+                <label :for="`guests[${index}][firstName]`">First name</label>
+                <input :id="`guests[${index}][firstName]`" type="text" :name="`guests[${index}][firstName]`" x-model="guest.firstName" autocomplete="given-name" required>
+              </div>
+              <div>
+                <label :for="`guests[${index}][lastName]`">Last name</label>
+                <input :id="`guests[${index}][lastName]`" type="text" :name="`guests[${index}][lastName]`" x-model="guest.lastName" autocomplete="family-name" required>
+              </div>
+              <button type="button" @click="removeGuest(index)" :disabled="formState.guests.length === 1">Remove guest</button>
+            </li>
+          </template>
+        </ul>
+        <button type="button" @click="addGuest()">Add a guest</button>
+      </section>
+    </template>
+    <button type="submit">Submit</button>
+  </form>
+{% endblock %}

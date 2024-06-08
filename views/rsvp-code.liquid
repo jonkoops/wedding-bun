@@ -1,0 +1,18 @@
+{% layout "layouts/base" %}
+
+{% block title %}RSVP{% endblock %}
+
+{% block content %}
+  <h1>Will you be there?</h1>
+  <p>Enter your invitation code.</p>
+  <form>
+    <div>
+      <label for="code">Invitation code</label>
+      <input type="text" name="code" autocomplete="off" required{% if invalidCode %} aria-invalid="true" aria-errormessage="code-error"{% endif %}>
+      {% if invalidCode %}
+        <span id="code-error" role="alert">Invalid code, please provide the code on your invitation.</span>
+      {% endif %}
+    </div>
+    <button type="submit">Submit</button>
+  </form>
+{% endblock %}

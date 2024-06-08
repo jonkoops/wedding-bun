@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>
+      {% block title %}{{ title }}{% endblock %} — Jon & Gabriella's Wedding
+    </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="robots" content="none">
+    <script type="importmap">
+      {
+        "imports": {
+          "alpinejs": "/vendor/alpinejs.js"
+        }
+      }
+    </script>
+    <link rel="modulepreload" href="/vendor/alpinejs.js">
+  </head>
+  <body>
+    <header>
+      <nav>
+        <ul>
+          <li><a href="/">Home</a></li>
+          <li><a href="/rsvp">RSVP</a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+    <script type="module">
+      import Alpine from 'alpinejs';
+      Alpine.start();
+    </script>
+  </body>
+</html>
