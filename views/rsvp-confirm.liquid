@@ -29,7 +29,7 @@
         <h2>Contact information</h2>
         <p>We'll use this information to keep you up-to-date on the wedding.</p>
         <div>
-          <label for="email">Email</label>
+          <label for="email">Your e-mail address:</label>
           <input id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required>
         </div>
       </section>
@@ -37,7 +37,7 @@
     <template x-if="formState.attending">
       <section>
         <h2>Guests</h2>
-        <p>Add all the attending guests here, yourself included.</p>
+        <p>Add all the guests here.</p>
         <ul>
           <template x-for="(guest, index) in formState.guests">
             <li>

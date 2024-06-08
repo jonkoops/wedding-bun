@@ -62,6 +62,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // Routes
 app.get('/', (req, res) => res.render('index'));
+app.get('/our-story', (req, res) => res.render('our-story'));
+app.get('/the-wedding', (req, res) => res.render('the-wedding'));
+app.get('/travel-and-accommodations', (req, res) => res.render('travel-and-accommodations'));
+app.get('/photos', (req, res) => res.render('photos'));
 
 app.get(
   '/rsvp',
