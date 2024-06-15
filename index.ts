@@ -1,19 +1,34 @@
 import { eq } from 'drizzle-orm';
-import express from 'express';
+import express, { type Request, type Response } from 'express';
 import asyncHandler from 'express-async-handler';
 import session from 'express-session';
 import { Liquid } from 'liquidjs';
 import stringifyObject from 'stringify-object';
 import { z } from 'zod';
 import { db, initializeDatabase } from './db/db';
-import { getInvitationByCode } from './db/queries';
+import { getInvitationById } from './db/queries';
 import { guests, invitations } from './db/schema';
+
+const {  DOMAIN, SESSION_SECRET, PASSCODE, NODE_ENV } = process.env;
+
+// Check environment variables
+if (!DOMAIN) {
+  throw new Error('The \'DOMAIN\' environment variable must be set.');
+}
+
+if (!SESSION_SECRET) {
+  throw new Error('The \'SESSION_SECRET\' environment variable must be set.');
+}
+
+if (!PASSCODE) {
+  throw new Error('The \'PASSCODE\' environment variable must be set.');
+}
 
 // Initialize database
 initializeDatabase();
 
 const app = express();
-const isProduction = process.env.NODE_ENV === 'production';
+const isProduction = NODE_ENV === 'production';
 
 // Configure view engine
 const liquid = new Liquid({
@@ -29,13 +44,9 @@ app.set('views', './views');
 app.set('view engine', 'liquid');
 
 // Configure session middleware
-if (!process.env.SESSION_SECRET) {
-  throw new Error('A session secret must be set.');
-}
-
 declare module 'express-session' {
   interface SessionData {
-    rsvpCode: string;
+    inviteId: number;
   }
 }
 
@@ -45,9 +56,9 @@ app.use(
     resave: false,
     rolling: true,
     saveUninitialized: false,
-    secret: process.env.SESSION_SECRET,
+    secret: SESSION_SECRET,
     cookie: {
-      domain: process.env.DOMAIN,
+      domain: DOMAIN,
       httpOnly: true,
       // Expire after 10 minutes of inactivity
       maxAge: 10 * 60 * 1000,
@@ -69,33 +80,68 @@ app.get('/the-wedding', (req, res) => res.render('the-wedding'));
 app.get('/travel-and-accommodations', (req, res) => res.render('travel-and-accommodations'));
 app.get('/photos', (req, res) => res.render('photos'));
 
+// TODO: Allow the user to get back to their reservation with a magic link.
+
 app.get(
   '/rsvp',
   asyncHandler(async (req, res) => {
-    const rsvpCode = req.query.code ?? req.session.rsvpCode;
+    const { inviteId } = req.session;
 
-    // If no invitation code is provided, render the RSVP code page to allow the user to enter one.
-    if (typeof rsvpCode !== 'string') {
-      return res.render('rsvp-code');
+    // If an invitation ID is stored in the session, handle the request with the invitation.
+    if (typeof inviteId !== 'undefined') {
+      return handleWithInvite(req, res, inviteId);
     }
 
-    // Look up the invitation by the provided code.
-    const invitation = await getInvitationByCode(rsvpCode.toLowerCase());
+    const { code } = req.query;
 
-    // If the invitation cannot be found the code is invalid, render the RSVP code page with an error message.
-    if (typeof invitation === 'undefined') {
-      return res.render('rsvp-code', { invalidCode: true });
+    // If a code is provided, handle the request with the code.
+    if (typeof code === 'string') {
+      handleWithCode(req, res, code);
+      return;
     }
 
-    // Store the invitation code in the session if it is not already present.
-    if (req.session.rsvpCode !== rsvpCode) {
-      req.session.rsvpCode = invitation.code;
-    }
-
-    // Render the RSVP confirmation form with the invitation.
-    return res.render('rsvp-confirm', { formState: inviteToFormState(invitation) });
+    // Otherwise, render the default page.
+    handleWithDefault(req, res);
   }),
 );
+
+async function handleWithInvite(req: Request, res: Response, inviteId: number) {
+  const invitation = await getInvitationById(inviteId);
+
+  // If the invitation does not exist, show the default page.
+  if (typeof invitation === 'undefined') {
+    delete req.session.inviteId;
+    handleWithDefault(req, res);
+    return;
+  }
+
+  // Store the invitation ID in the session if it is not already present.
+  if (req.session.inviteId !== inviteId) {
+    req.session.inviteId = invitation.id;
+  }
+
+  // Render the RSVP confirmation page with the invitation.
+  res.render('rsvp-confirm', { formState: inviteToFormState(invitation) });
+}
+
+async function handleWithCode(req: Request, res: Response, code: string) {
+  // Check if the code matches the passcode.
+  const isValid = code.toLowerCase() === PASSCODE!.toLowerCase();
+
+  // If the code is valid show the RSVP confirmation page.
+  if (isValid) {
+    res.render('rsvp-confirm', { formState: DEFAULT_FORM_STATE });
+    return;
+  }
+
+  // Otherwise, render the code page with an error message.
+  res.render('rsvp-password', { invalidCode: true });
+}
+
+async function handleWithDefault(req: Request, res: Response) {
+  // Render the code page.
+  res.render('rsvp-password');
+}
 
 function processBoolean(value: unknown): boolean {
   return value === 'true';
@@ -123,26 +169,41 @@ const RsvpFormGuest = z.object({
 
 const RsvpForm = z.object({
   attending: z.preprocess(processBoolean, z.boolean()),
-  email: z.string().trim().email().optional(),
-  guests: RsvpFormGuest.array().optional().default([]),
+  email: z.string().trim().email(),
+  notes: z.string().trim(),
+  primaryGuest: RsvpFormGuest,
+  guests: RsvpFormGuest.array(),
 });
+
+const DEFAULT_FORM_STATE: z.infer<typeof RsvpForm> = {
+  attending: true,
+  email: '',
+  notes: '',
+  primaryGuest: {
+    firstName: '',
+    lastName: '',
+  },
+  guests: [],
+};
 
 app.post(
   '/rsvp',
   asyncHandler(async (req, res) => {
-    const rsvpCode = req.session.rsvpCode;
+    const { inviteId } = req.session;
 
-    // If the session does not contain an invitation code, render the RSVP code page to allow the user to enter one.
-    if (typeof rsvpCode !== 'string') {
-      return res.render('rsvp-code');
+    // If the session does not contain an invitation if fall back to the default page.
+    if (typeof inviteId !== 'string') {
+      handleWithDefault(req, res);
+      return;
     }
 
-    // Look up the invitation by the stored code.
-    const invitation = await getInvitationByCode(rsvpCode);
+    // Look up the invitation from the session.
+    const invitation = await getInvitationById(inviteId);
 
-    // If the invitation cannot be found the code is invalid, render the RSVP code page with an error message.
+    // If the invitation cannot be found fall back to the default page.
     if (typeof invitation === 'undefined') {
-      return res.render('rsvp-code', { invalidCode: true });
+      handleWithDefault(req, res);
+      return;
     }
 
     // TODO: Handle parsing errors
@@ -194,25 +255,14 @@ app.post(
       }
     });
 
-    const updatedInvitation = await getInvitationByCode(rsvpCode);
+    const updatedInvitation = await getInvitationById(invitation.id);
 
     // Render the RSVP confirmation page with the updated invitation.
     return res.render('rsvp-confirm', { formState: inviteToFormState(updatedInvitation) });
   }),
 );
 
-const DEFAULT_FORM_STATE = {
-  attending: true,
-  email: undefined,
-  guests: [
-    {
-      firstName: '',
-      lastName: '',
-    },
-  ],
-};
-
-function inviteToFormState(invitation: Awaited<ReturnType<typeof getInvitationByCode>>): z.infer<typeof RsvpForm> {
+function inviteToFormState(invitation: Awaited<ReturnType<typeof getInvitationById>>): z.infer<typeof RsvpForm> {
   // If the invitation does not exist, return a default form state.
   if (!invitation) {
     return DEFAULT_FORM_STATE;
