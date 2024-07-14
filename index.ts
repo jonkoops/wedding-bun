@@ -60,9 +60,11 @@ app.use(
 // Middleware to parse form data
 app.use(express.urlencoded({ extended: true }));
 
+// Files to be served statically.
+app.use(express.static('public'))
+
 // Routes
 app.get('/', (req, res) => res.render('index'));
-app.get('/our-story', (req, res) => res.render('our-story'));
 app.get('/the-wedding', (req, res) => res.render('the-wedding'));
 app.get('/travel-and-accommodations', (req, res) => res.render('travel-and-accommodations'));
 app.get('/photos', (req, res) => res.render('photos'));

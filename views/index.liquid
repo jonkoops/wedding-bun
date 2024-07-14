@@ -1,14 +1,29 @@
 {% layout "layouts/base" %}
 
-{% block title %}We're getting married!{% endblock %}
+{% block title %}We are getting married{% endblock %}
 
 {% block content %}
-  <h1>We're getting married!</h1>
-  <p>We would like to invite you to our wedding. To celebrate our love and be part of the special day.</p>
-  <hr>
-  <p>
-    Save the Date<br>
-    24 May 2025
-  </p>
-  <a href="/rsvp">RSVP</a>
+  <section class="grid margin-bottom-3xl">
+    <div class="display-flex flex-direction-column justify-content-center text-align-center" style="--grid-column: col-start / span 12; --grid-column-md: col-start / span 6;">
+      <hgroup class="margin-bottom-s">
+        <h1 class="margin-bottom-m text-fancy font-size-6">We are getting married</h1>
+        <p class="font-size-5">Jon & Gabriella</p>
+      </hgroup>
+      <time datetime="24-05-2025" class="margin-bottom-s font-size-1 text-transform-uppercase">May 24th, 2025</time>
+      <a class="button margin-inline-auto" href="/rsvp">RSVP Here</a>
+    </div>
+    <img class="margin-inline-auto" style="--grid-column: col-start / span 12; --grid-column-md: col-start 7 / span 6;" src="/images/flowers.webp" alt="" width="595" height="579" role="presentation">
+  </section>
+  <section class="grid">
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 text-align-center padding-block-xl">
+      We would like to invite you to our wedding. To celebrate our love and be part of the special day.<br><br>
+      On this website, you can find all the information about the wedding, and travelling to Italy.<br><br>
+      Here are some quick links to the most important information<br><br>
+    </p>
+    <div class="display-flex flex-direction-column flex-direction-row-on-md justify-content-space-between gap-m margin-bottom-xl" style="--grid-column: col-start / span 12; --grid-column-lg: col-start 2 / span 10;">
+      <a class="button" href="/the-wedding">The wedding ceremony</a>
+      <a class="button" href="/travel-and-accommodations">Travel and accommodation</a>
+      <a class="button" href="/">Downloadable survival guide</a>
+    </div>
+  </section>
 {% endblock %}
