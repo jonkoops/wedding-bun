@@ -14,24 +14,26 @@
         }
       }
     </script>
+    <link rel="stylesheet" href="/styles.css">
+    <link rel="preload" href="/fonts/alice.woff2" as="font" type="font/woff2" crossorigin>
+    <link rel="preload" href="/fonts/amsterdam-one.woff2" as="font" type="font/woff2" crossorigin>
     <link rel="modulepreload" href="/vendor/alpinejs.js">
   </head>
   <body>
-    <header>
-      <nav>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/our-story">Our story</a></li>
-          <li><a href="/the-wedding">The wedding</a></li>
-          <li><a href="/travel-and-accommodations">Travel and accommodations</a></li>
-          <li><a href="/rsvp">RSVP</a></li>
-          <li><a href="/photos">Photos</a></li>
-        </ul>
-      </nav>
-    </header>
-    <main>
-      {% block content %}{% endblock %}
-    </main>
+    <div class="page-container">
+      <header class="margin-bottom-m">
+        <nav class="nav">
+          <a href="/">Home</a>
+          <a href="/the-wedding">The wedding</a>
+          <a href="/travel-and-accommodations">Travel and accommodations</a>
+          <a href="/rsvp">RSVP</a>
+          <a href="/photos">Photos</a>
+        </nav>
+      </header>
+      <main>
+        {% block content %}{% endblock %}
+      </main>
+    </div>
     <script type="module">
       import Alpine from 'alpinejs';
       Alpine.start();
