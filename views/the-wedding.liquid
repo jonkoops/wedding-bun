@@ -3,49 +3,69 @@
 {% block title %}The wedding{% endblock %}
 
 {% block content %}
-  <h1>The wedding</h1>
-  <section>
-    <h2>Ceremony details</h2>
-    <p>
+  <section class="grid margin-bottom-3xl">
+    <div class="display-flex flex-direction-column justify-content-center text-align-center" style="--grid-column: col-start / span 12; --grid-column-md: col-start / span 6;">
+      <h1 class="margin-bottom-m text-fancy font-size-6">The Wedding</h1>
+    </div>
+    <img class="margin-inline-auto" style="--grid-column: col-start / span 12; --grid-column-md: col-start 7 / span 6;" src="/images/flowers.webp" alt="" width="595" height="579" role="presentation">
+  </section>
+  <section class="grid margin-bottom-3xl">
+    <h2 style="--grid-column: col-start / span 12;" class="font-size-4 text-align-center margin-bottom-m">Location</h2>
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 text-align-center">The wedding will take place in Caserta, in the South of Italy. To find the best way to get there, and travel information, visit the Travel and Accommodation section.</p>
+    <div style="--grid-column: col-start / span 12;" class="display-flex flex-direction-column justify-content-center">
+      <a class="button margin-inline-auto" href="/travel-and-accommodations">Travel and accommodation</a>
+    </div>
+  </section>
+  <section class="grid margin-bottom-3xl">
+    <h2 style="--grid-column: col-start / span 12;" class="font-size-4 text-align-center margin-bottom-m">Ceremony & Reception</h2>
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 text-align-center">
       Join us for our wedding ceremony at Castello Ducale (Castel Campagnano), a historical building built at the end of the 18th century in the Caserta area.<br><br>
-      Details about the ceremony time will be coming soon.
+      The reception will occur in the same location as the ceremony (Castello Ducale), where we will eat, drink, and party from the late afternoon until midnight.
     </p>
   </section>
-  <section>
-    <h2>Reception details</h2>
-    <p>
-      The reception will take place in the same location as the ceremony (Castello Ducale), where we will eat, drink, and party from the late afternoon until midnight.<br><br>
-      The full program of the reception will be coming soon.
-    </p>
-  </section>
-  <section>
-    <h2>Dress code</h2>
-    <p>
-      You may be wondering what to wear at an Italian wedding. We&amp;re here to help.
-      The dress code is <strong>Creative Black Tie</strong>, which means formal attire, but with room for personalization.<br><br>
-      For example, Men can wear a black suit with a colorful tie, while women can wear a formal dress in a bright color or pattern.<br><br>
-      Whatever you decide to wear, make sure you feel relaxed and comfortable and embrace your own style.<br><br>
-      If you have doubts, feel free to reach out to Bibi for personalized tips.
-    </p>
-  </section>
-  <section>
-    <h2>Directions</h2>
-    <!-- TODO: Add a map here -->
-    <p>
-      Address: Via XIV Ottobre, 81010 Castel Campagnano CE, Italy
-    </p>
-    <h3>Parking information</h3>
-    <p>
+  <section class="grid margin-bottom-3xl">
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 text-align-center">
+      Castello Ducale<br>
+      (Castel Campagnano)<br>
+      <br>
+      Address:<br>
+      Via XIV Ottobre, 81010 Castel Campagnano CE, Italy<br>
+      <br>
+      Parking:<br>
       The wedding venue offers free parking for the guests.
     </p>
   </section>
-  <section>
-    <h2>Gift policy</h2>
-    <p>
-      Your presence at our wedding is the greatest gift we could ask for, especially if you are travelling from abroad and covering hotel and transportation costs. If you still wish to contribute, we would be grateful for any contributions towards our honeymoon.<br><br>
-      Our IBAN details are provided below:<br>
-      <!-- TODO: Add IBAN details here -->
-       NL91 ABNA 0000 0000 00
+  <section class="grid margin-bottom-3xl">
+    <h2 style="--grid-column: col-start / span 12;" class="font-size-4 text-align-center margin-bottom-m">Programme</h2>
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 text-align-center">
+      <strong>16.00:</strong> Welcome<br>
+      <strong>16.30:</strong> Ceremony<br>
+      <strong>17.30:</strong> Dinner starts<br>
+      <strong>21.00:</strong> Wine tasting<br>
+      <strong>22.00:</strong> Cake cutting<br>
+      <strong>23.00:</strong> Dance<br>
+    </p>
+  </section>
+  <section class="grid margin-bottom-3xl">
+    <h2 style="--grid-column: col-start / span 12;" class="font-size-4 text-align-center margin-bottom-s">Good to know</h2>
+    <h3 style="--grid-column: col-start / span 12;" class="font-size-3 text-align-center margin-bottom-m">Dress code</h3>
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 margin-bottom-3xl">
+      You may be wondering what to wear at an Italian wedding. We’re here to help.<br>
+      <br>
+      The dress code is Creative Black Tie, which means formal attire, but with room for personalization.<br>
+      For example, Men can wear a black suit with a colorful tie, while women can wear a formal dress in a bright color or pattern.<br>
+      <br>
+      Whatever you wear, make sure you feel relaxed and comfortable and embrace your style.<br>
+      <br>
+      If you have doubts, feel free to reach out to Bibi for personalized tips.
+    </p>
+    <h3 style="--grid-column: col-start / span 12;" class="font-size-3 text-align-center margin-bottom-m">Gifts</h3>
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2">
+      Your presence at our wedding is the greatest gift we could ask for, especially if you travel from abroad and cover hotel and transportation costs.<br>
+      <br>
+      If you still wish to contribute, we would be grateful for any contributions towards our honeymoon. Our IBAN details are provided below:<br>
+      <br>
+      NL52BUNQ2122698047
     </p>
   </section>
 {% endblock %}
