@@ -239,4 +239,4 @@ function inviteToFormState(invitation: Awaited<ReturnType<typeof getInvitationBy
 app.use('/vendor/alpinejs.js', express.static('node_modules/alpinejs/dist/module.esm.min.js'));
 
 // Start server
-app.listen(3000);
+app.listen(3000, '0.0.0.0');
