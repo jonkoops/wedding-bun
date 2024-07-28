@@ -16,12 +16,18 @@
 
     // Best practices
     "strict": true,
+    "noUncheckedIndexedAccess": true,
     "skipLibCheck": true,
     "noFallthroughCasesInSwitch": true,
 
     // Some stricter flags (disabled by default)
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "noPropertyAccessFromIndexSignature": false
+    "noPropertyAccessFromIndexSignature": false,
+
+    // Custom flags
+    "typeRoots": [
+      "./types"
+    ],
   }
 }

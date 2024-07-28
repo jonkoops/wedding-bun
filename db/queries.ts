@@ -1,7 +1,24 @@
-import { eq } from "drizzle-orm";
-import { db } from "./db";
-import { invitations } from "./schema";
+import { readDocument, writeDocument } from "./db";
+import type { Invitation } from "./schema";
 
-export function getInvitationByCode(code: string) {
-  return db.query.invitations.findFirst({ where: eq(invitations.code, code), with: { guests: true } });
+export async function getInvitationById(id: string): Promise<Invitation | undefined> {
+  const document = await readDocument();
+  return document.invitations[id];
+}
+
+export async function getInvitationByEmail(email: string): Promise<Invitation | undefined> {
+  const document = await readDocument();
+  return Object.values(document.invitations).find((invitation) => invitation.email === email);
+}
+
+export async function updateInvitation(invitation: Invitation): Promise<void> {
+  const document = await readDocument();
+
+  await writeDocument({
+    ...document,
+    invitations: {
+      ...document.invitations,
+      [invitation.id]: invitation,
+    },
+  });
 }

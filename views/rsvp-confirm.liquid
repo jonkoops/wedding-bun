@@ -4,6 +4,9 @@
 
 {% block content %}
   <h1>Will you be there?</h1>
+  {% if emailTaken %}
+    <p role="alert">It looks like you've already RSVP'd. If you need to make changes, please use the link in your e-mail.</p>
+  {% endif %}
   <form x-data="{
     formState: {{ formState | stringifyObject }},
     addGuest() {
@@ -24,41 +27,57 @@
         </select>
       </div>
     </section>
+    <section>
+      <h2>Contact information</h2>
+      <p>We'll use this information to keep you up-to-date on the wedding.</p>
+      <div>
+        <label for="primaryGuest[firstName]">Your first name</label><br>
+        <input id="primaryGuest[firstName]" name="primaryGuest[firstName]" type="text" x-model="formState.primaryGuest.firstName" autocomplete="given-name" required>
+      </div>
+      <div>
+        <label for="primaryGuest[lastName]">Your last name</label><br>
+        <input id="primaryGuest[lastName]" name="primaryGuest[lastName]" type="text" x-model="formState.primaryGuest.lastName" autocomplete="family-name" required>
+      </div>
+      <div>
+        <label for="email">
+          Your e-mail address<br>
+          <small>We'll send you a link to your invitation in case you change your mind.</small>
+        </label><br>
+        <input id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required><br>
+      </div>
+    </section>
     <template x-if="formState.attending">
       <section>
-        <h2>Contact information</h2>
-        <p>We'll use this information to keep you up-to-date on the wedding.</p>
-        <div>
-          <label for="email">Your e-mail address:</label>
-          <input id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required>
-        </div>
+        <h2>Plus-ones</h2>
+        <p>Do you want to bring anyone else?</p>
+        <template x-if="formState.guests.length > 0">
+          <ul>
+            <template x-for="(guest, index) in formState.guests">
+              <li>
+                <template x-if="guest.id">
+                  <input type="hidden" :name="`guests[${index}][id]`" :value="guest.id">
+                </template>
+                <div>
+                  <label :for="`guests[${index}][firstName]`">First name</label>
+                  <input :id="`guests[${index}][firstName]`" type="text" :name="`guests[${index}][firstName]`" x-model="guest.firstName" autocomplete="given-name" required>
+                </div>
+                <div>
+                  <label :for="`guests[${index}][lastName]`">Last name</label>
+                  <input :id="`guests[${index}][lastName]`" type="text" :name="`guests[${index}][lastName]`" x-model="guest.lastName" autocomplete="family-name" required>
+                </div>
+                <button type="button" @click="removeGuest(index)">Remove plus-one</button>
+              </li>
+            </template>
+          </ul>
+        </template>
+        <button type="button" @click="addGuest()">Add plus-one</button>
       </section>
     </template>
-    <template x-if="formState.attending">
-      <section>
-        <h2>Guests</h2>
-        <p>Add all the guests here.</p>
-        <ul>
-          <template x-for="(guest, index) in formState.guests">
-            <li>
-              <template x-if="guest.id">
-                <input type="hidden" :name="`guests[${index}][id]`" :value="guest.id">
-              </template>
-              <div>
-                <label :for="`guests[${index}][firstName]`">First name</label>
-                <input :id="`guests[${index}][firstName]`" type="text" :name="`guests[${index}][firstName]`" x-model="guest.firstName" autocomplete="given-name" required>
-              </div>
-              <div>
-                <label :for="`guests[${index}][lastName]`">Last name</label>
-                <input :id="`guests[${index}][lastName]`" type="text" :name="`guests[${index}][lastName]`" x-model="guest.lastName" autocomplete="family-name" required>
-              </div>
-              <button type="button" @click="removeGuest(index)" :disabled="formState.guests.length === 1">Remove guest</button>
-            </li>
-          </template>
-        </ul>
-        <button type="button" @click="addGuest()">Add a guest</button>
-      </section>
-    </template>
+    <section>
+      <h2>Additional notes</h2>
+      <p>Got any dietary restrictions or other notes for us? Let us know here.</p>
+      <textarea name="notes" x-model="formState.notes"></textarea>
+    </section>
     <button type="submit">Submit</button>
   </form>
 {% endblock %}
