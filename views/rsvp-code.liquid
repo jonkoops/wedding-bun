@@ -4,11 +4,14 @@
 
 {% block content %}
   <h1>Will you be there?</h1>
-  <p>Enter your invitation code.</p>
-  <form>
+  {% if sessionExpired %}
+    <p role="alert">Your session expired before you could RSVP. Please try again.</p>
+  {% endif %}
+  <p>Enter the secret code provided with your invitation.</p>
+  <form method="post">
     <div>
-      <label for="code">Invitation code</label>
-      <input type="text" name="code" autocomplete="off" required{% if invalidCode %} aria-invalid="true" aria-errormessage="code-error"{% endif %}>
+      <label for="code">Secret code:</label><br>
+      <input type="password" name="code" autocomplete="off" required{% if invalidCode %} aria-invalid="true" aria-errormessage="code-error"{% endif %}>
       {% if invalidCode %}
         <span id="code-error" role="alert">Invalid code, please provide the code on your invitation.</span>
       {% endif %}
