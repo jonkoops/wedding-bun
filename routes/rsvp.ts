@@ -41,7 +41,6 @@ rsvpRouter.get(
   asyncHandler(async (req, res) => {
     const { authorized, invitationId } = req.session;
 
-    console.log({ authorized, invitationId });
 
     // If the user has not yet entered a valid code, render the code form.
     if (!authorized) {
@@ -119,8 +118,6 @@ async function handleRsvpSubmission(req: Request, res: Response) {
     }
 
     await updateInvitation(invitation);
-
-    console.log("Successfully updated invitation:", invitation);
 
     // Store the invitation ID in the session so it can be retrieved later.
     req.session.invitationId = invitation.id;
