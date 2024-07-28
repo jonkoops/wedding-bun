@@ -26,6 +26,11 @@ app.engine("liquid", liquid.express());
 app.set("views", "./views");
 app.set("view engine", "liquid");
 
+// Trust the first proxy when running in production, needed to enable secure cookies.
+if (environment.isProduction) {
+  app.set("trust proxy", 1);
+}
+
 // Configure session middleware
 app.use(
   session({
@@ -40,7 +45,7 @@ app.use(
       // Expire after 10 minutes of inactivity
       maxAge: 10 * 60 * 1000,
       sameSite: "strict",
-      // secure: environment.isProduction,
+      secure: environment.isProduction,
     },
   }),
 );
