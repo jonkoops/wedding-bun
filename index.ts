@@ -40,7 +40,6 @@ app.use(
     saveUninitialized: false,
     secret: environment.sessionSecret,
     cookie: {
-      domain: environment.domain,
       httpOnly: true,
       // Expire after 10 minutes of inactivity
       maxAge: 10 * 60 * 1000,
