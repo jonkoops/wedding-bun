@@ -6,9 +6,14 @@ export async function getInvitationById(id: string): Promise<Invitation | undefi
   return document.invitations[id];
 }
 
-export async function getInvitationByEmail(email: string): Promise<Invitation | undefined> {
+export async function getAllInvitations(): Promise<Invitation[]> {
   const document = await readDocument();
-  return Object.values(document.invitations).find((invitation) => invitation.email === email);
+  return Object.values(document.invitations);
+}
+
+export async function getInvitationByEmail(email: string): Promise<Invitation | undefined> {
+  const invitations = await getAllInvitations();
+  return invitations.find((invitation) => invitation.email === email);
 }
 
 export async function updateInvitation(invitation: Invitation): Promise<void> {
