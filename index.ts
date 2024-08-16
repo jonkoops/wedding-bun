@@ -31,6 +31,15 @@ if (environment.isProduction) {
   app.set("trust proxy", 1);
 }
 
+// Redirect requests to 'www' subdomain to the root domain.
+app.use((req, res, next) => {
+  if (req.subdomains.at(-1) === "www") {
+    res.redirect(301, `https://${req.hostname.replace("www.", "")}${req.url}`);
+  } else {
+    next();
+  }
+});
+
 // Configure session middleware
 app.use(
   session({
