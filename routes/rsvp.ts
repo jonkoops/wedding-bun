@@ -1,10 +1,8 @@
 import { Router, type Request, type Response } from "express";
 import asyncHandler from "express-async-handler";
 import { z } from "zod";
-
-import { generateId } from "../db/db";
-import { getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
-import type { Guest, Invitation } from "../db/schema";
+import { createInvitation, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
+import type { Guest, UnidentifiedInvitation } from "../db/schema";
 import { environment } from "../environment";
 import { processBoolean } from "../utils";
 
@@ -48,7 +46,7 @@ rsvpRouter.get(
     }
 
     // If the user has not RSVP'd yet, render the confirmation form with the default state.
-    if (typeof invitationId !== "string") {
+    if (typeof invitationId === "undefined") {
       return renderConfirmationForm(req, res);
     }
 
@@ -103,26 +101,30 @@ async function handleRsvpSubmission(req: Request, res: Response) {
     return renderCodeForm(req, res, { sessionExpired: true });
   }
 
-  // Look up the invitation from the session.
-  const existingInvitation = typeof invitationId === "string" ? await getInvitationById(invitationId) : undefined;
+  // Look up the original invitation from the session.
+  const originalInvitation = typeof invitationId !== "undefined"
+    ? await getInvitationById(invitationId)
+    : undefined;
 
   try {
     // Parse the request body and convert it to an invitation.
     const formState = RsvpForm.parse(req.body);
-    const invitation = formStateToInvitation(formState, existingInvitation);
-    const existingInvitationByEmail = await getInvitationByEmail(invitation.email);
+    const parsedFormState = formStateToInvitation(formState);
+    const conflictingInvitation = await getInvitationByEmail(parsedFormState.email);
 
     // Check if the email is already in use by another invitation.
-    if (existingInvitationByEmail && existingInvitationByEmail.id !== invitation.id) {
-      return renderConfirmationForm(req, res, { emailTaken: true, formState });
+    if (conflictingInvitation && conflictingInvitation.id !== originalInvitation?.id) {
+      return renderConfirmationForm(req, res, { emailTaken: true, formState: formState });
     }
 
-    await updateInvitation(invitation);
+    const updatedInvitationId = originalInvitation
+      ? await updateInvitation({ ...parsedFormState, id: originalInvitation.id })
+      : await createInvitation(parsedFormState);
 
     // Store the invitation ID in the session so it can be retrieved later.
-    req.session.invitationId = invitation.id;
+    req.session.invitationId = updatedInvitationId;
 
-    return renderConfirmationForm(req, res, { formState: invitationToFormState(invitation) });
+    return renderConfirmationForm(req, res, { formState: invitationToFormState(parsedFormState) });
   } catch (error) {
     console.error("Error updating invitation:", error);
     return renderError(req, res);
@@ -155,18 +157,14 @@ function renderError(req: Request, res: Response) {
   res.render("rsvp-error");
 }
 
-function formStateToInvitation(
-  formState: FormState,
-  existingInvitation?: Invitation,
-): Invitation {
+function formStateToInvitation(formState: FormState): UnidentifiedInvitation {
   const guests: Guest[] = formState.guests.map((guest) => ({
     firstName: guest.firstName,
     lastName: guest.lastName,
   }));
 
   return {
-    id: existingInvitation?.id ?? generateId(),
-    status: formState.attending ? "ACCEPTED" : "REJECTED",
+    status: formState.attending ? "accepted" : "rejected",
     email: formState.email,
     notes: formState.notes,
     primaryGuest: {
@@ -177,9 +175,9 @@ function formStateToInvitation(
   };
 }
 
-function invitationToFormState(invitation: Invitation): FormState {
+function invitationToFormState(invitation: UnidentifiedInvitation): FormState {
   return {
-    attending: invitation.status === "ACCEPTED",
+    attending: invitation.status === "accepted",
     email: invitation.email,
     notes: invitation.notes,
     primaryGuest: {

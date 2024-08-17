@@ -1,29 +1,25 @@
-import { readDocument, writeDocument } from "./db";
-import type { Invitation } from "./schema";
+import { eq } from "drizzle-orm";
+import { db } from "./db";
+import { invitations, type UnidentifiedInvitation, type Invitation } from "./schema";
 
-export async function getInvitationById(id: string): Promise<Invitation | undefined> {
-  const document = await readDocument();
-  return document.invitations[id];
+export function getInvitationById(id: number): Promise<Invitation | undefined> {
+  return db.query.invitations.findFirst({ where: eq(invitations.id, id) });
 }
 
-export async function getAllInvitations(): Promise<Invitation[]> {
-  const document = await readDocument();
-  return Object.values(document.invitations);
+export function getInvitationByEmail(email: string): Promise<Invitation | undefined> {
+  return db.query.invitations.findFirst({ where: eq(invitations.email, email) });
 }
 
-export async function getInvitationByEmail(email: string): Promise<Invitation | undefined> {
-  const invitations = await getAllInvitations();
-  return invitations.find((invitation) => invitation.email === email);
+export async function createInvitation(invitation: UnidentifiedInvitation): Promise<number> {
+  const result = await db.insert(invitations).values(invitation).returning({ id: invitations.id });
+  return result[0]!.id;
 }
 
-export async function updateInvitation(invitation: Invitation): Promise<void> {
-  const document = await readDocument();
-
-  await writeDocument({
-    ...document,
-    invitations: {
-      ...document.invitations,
-      [invitation.id]: invitation,
-    },
-  });
+export async function updateInvitation(invitation: Invitation): Promise<number> {
+  const result = await db.update(invitations)
+    .set(invitation)
+    .where(eq(invitations.id, invitation.id))
+    .returning({ id: invitations.id });
+  
+  return result[0]!.id;
 }
