@@ -3,12 +3,12 @@ import session from "express-session";
 import { Liquid } from "liquidjs";
 import stringifyObject from "stringify-object";
 
-import { initializeDocument } from "./db/db";
+import { initializeDatabase } from "./db/db";
 import { environment } from "./environment";
 import { rsvpRouter } from "./routes/rsvp";
 
-// Initialize database document
-await initializeDocument();
+// Initialize database
+await initializeDatabase();
 
 // Set up Express
 const app = express();

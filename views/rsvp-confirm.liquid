@@ -46,33 +46,31 @@
         <input id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required><br>
       </div>
     </section>
-    <template x-if="formState.attending">
-      <section>
-        <h2>Plus-ones</h2>
-        <p>Do you want to bring anyone else?</p>
-        <template x-if="formState.guests.length > 0">
-          <ul>
-            <template x-for="(guest, index) in formState.guests">
-              <li>
-                <template x-if="guest.id">
-                  <input type="hidden" :name="`guests[${index}][id]`" :value="guest.id">
-                </template>
-                <div>
-                  <label :for="`guests[${index}][firstName]`">First name</label>
-                  <input :id="`guests[${index}][firstName]`" type="text" :name="`guests[${index}][firstName]`" x-model="guest.firstName" autocomplete="given-name" required>
-                </div>
-                <div>
-                  <label :for="`guests[${index}][lastName]`">Last name</label>
-                  <input :id="`guests[${index}][lastName]`" type="text" :name="`guests[${index}][lastName]`" x-model="guest.lastName" autocomplete="family-name" required>
-                </div>
-                <button type="button" @click="removeGuest(index)">Remove plus-one</button>
-              </li>
-            </template>
-          </ul>
-        </template>
-        <button type="button" @click="addGuest()">Add plus-one</button>
-      </section>
-    </template>
+    <section x-show="formState.attending">
+      <h2>Plus-ones</h2>
+      <p>Do you want to bring anyone else?</p>
+      <template x-if="formState.guests.length > 0">
+        <ul>
+          <template x-for="(guest, index) in formState.guests">
+            <li>
+              <template x-if="guest.id">
+                <input type="hidden" :name="`guests[${index}][id]`" :value="guest.id">
+              </template>
+              <div>
+                <label :for="`guests[${index}][firstName]`">First name</label>
+                <input :id="`guests[${index}][firstName]`" type="text" :name="`guests[${index}][firstName]`" x-model="guest.firstName" autocomplete="given-name" required>
+              </div>
+              <div>
+                <label :for="`guests[${index}][lastName]`">Last name</label>
+                <input :id="`guests[${index}][lastName]`" type="text" :name="`guests[${index}][lastName]`" x-model="guest.lastName" autocomplete="family-name" required>
+              </div>
+              <button type="button" @click="removeGuest(index)">Remove plus-one</button>
+            </li>
+          </template>
+        </ul>
+      </template>
+      <button type="button" @click="addGuest()">Add plus-one</button>
+    </section>
     <section>
       <h2>Additional notes</h2>
       <p>Got any dietary restrictions or other notes for us? Let us know here.</p>
