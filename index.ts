@@ -5,6 +5,7 @@ import stringifyObject from "stringify-object";
 
 import { initializeDatabase } from "./db/db";
 import { environment } from "./environment";
+import { DrizzleStore } from "./misc/drizzle-store";
 import { rsvpRouter } from "./routes/rsvp";
 
 // Initialize database
@@ -41,8 +42,11 @@ app.use((req, res, next) => {
 });
 
 // Configure session middleware
+const drizzleStore = new DrizzleStore();
+
 app.use(
   session({
+    store: drizzleStore,
     name: "session",
     resave: false,
     rolling: true,
