@@ -120,7 +120,6 @@ img {
 
 html {
   line-height: 1.1;
-  font-synthesis: none;
   font-kerning: none;
   font-variant-ligatures: none;
   font-feature-settings: "kern" 0, "calt" 0, "liga" 0, "clig" 0, "dlig" 0, "hlig" 0;
@@ -139,6 +138,10 @@ h3 { font-size: var(--step-1); }
 h4 { font-size: var(--step-0); }
 h5 { font-size: var(--step--1); }
 h6 { font-size: var(--step--2); }
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+}
 
 a {
   text-decoration: underline;
