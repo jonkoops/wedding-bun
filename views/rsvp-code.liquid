@@ -3,23 +3,25 @@
 {% block title %}RSVP{% endblock %}
 
 {% block content %}
-  <section class="grid margin-top-3xl margin-bottom-3xl">
-    <h1 style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-4">Will you be there?</h1>
-    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2">
+  <section class="grid margin-top-3xl margin-bottom-3xl" style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;">
+    <h1 class="font-size-4">Will you be there?</h1>
+    <p class="font-size-2">
       Enter the secret code provided with your invitation.
     </p>
     {% if sessionExpired %}
-      <p style="--grid-column: col-start / span 12;" class="text-align-center" role="alert">
+      <p class="text-align-center" role="alert">
         <span aria-label="">⚠️</span> Your session expired before you could RSVP. Please try again. <span aria-label="">⚠️</span>
       </p>
     {% endif %}
-    <form style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" method="post">
+    {% if invalidCode %}
+      <p id="code-error" class="text-align-center" role="alert">
+        <span aria-label="">⚠️</span> Invalid code, please provide the code on your invitation. <span aria-label="">⚠️</span>
+      </p>
+    {% endif %}
+    <form method="post">
       <div class="margin-bottom-m">
-        <label class="font-size-1 text-align-center" for="code">Secret code:</label><br>
+        <label class="font-size-1" for="code">Secret code:</label><br>
         <input class="text-control" type="password" id="code" name="code" autocomplete="off" required{% if invalidCode %} aria-invalid="true" aria-errormessage="code-error"{% endif %}>
-        {% if invalidCode %}
-          <span id="code-error" role="alert">Invalid code, please provide the code on your invitation.</span>
-        {% endif %}
       </div>
       <button class="button" type="submit">Submit</button>
     </form>
