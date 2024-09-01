@@ -179,6 +179,15 @@ a {
 
 .width-100 { width: 100%; }
 
+.margin-top-2xs { margin-top: var(--space-2xs); }
+.margin-top-xs { margin-top: var(--space-xs); }
+.margin-top-s { margin-top: var(--space-s); }
+.margin-top-m { margin-top: var(--space-m); }
+.margin-top-l { margin-top: var(--space-l); }
+.margin-top-xl { margin-top: var(--space-xl); }
+.margin-top-2xl { margin-top: var(--space-2xl); }
+.margin-top-3xl { margin-bottom: var(--space-3xl); }
+
 .margin-bottom-2xs { margin-bottom: var(--space-2xs); }
 .margin-bottom-xs { margin-bottom: var(--space-xs); }
 .margin-bottom-s { margin-bottom: var(--space-s); }
@@ -222,6 +231,10 @@ a {
 .text-align-center { text-align: center; }
 
 .text-transform-uppercase { text-transform: uppercase; }
+
+.flip-horizontal { transform: scaleX(-1); }
+
+.text-italic { font-style: italic; }
 
 .text-fancy {
   font-family: var(--font-family-fancy);
