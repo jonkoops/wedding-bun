@@ -218,6 +218,7 @@ a {
   letter-spacing: 0.1rem;
   color: var(--color-text-secondary);
   background-color: var(--color-button);
+  cursor: pointer;
 }
 
 .image {
