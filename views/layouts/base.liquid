@@ -22,16 +22,22 @@
   </head>
   <body>
     <div class="page-container">
-      <header class="margin-bottom-m">
-        <nav class="nav">
-          <a href="/">Home</a>
-          <a href="/the-wedding">The Wedding</a>
-          <a href="/travel-and-accommodations">Travel &amp; Accommodation</a>
-          <a href="/rsvp">RSVP</a>
-          <a href="/photos">Photos</a>
-        </nav>
+      <header class="margin-bottom-m" x-data="{ open: false }">
+        <button class="button nav-toggle padding-s" @click="open = true">
+          <img src="/images/menu.svg" alt="" width="25" height="25">
+        </button>
+        <div class="nav" :class="open && 'open'">  
+          <button class="button nav-toggle" @click="open = false">Close</button>
+          <nav class="nav-items">
+            <a href="/">Home</a>
+            <a href="/the-wedding">The Wedding</a>
+            <a href="/travel-and-accommodations">Travel &amp; Accommodation</a>
+            <a href="/rsvp">RSVP</a>
+            <a href="/photos">Photos</a>
+          </nav>
+        </div>
       </header>
-      <main>
+      <main class="page-content">
         {% block content %}{% endblock %}
       </main>
     </div>
