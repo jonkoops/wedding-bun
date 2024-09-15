@@ -3,7 +3,7 @@ import asyncHandler from "express-async-handler";
 import { z } from "zod";
 import { createInvitation, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
 import type { Guest, UnidentifiedInvitation } from "../db/schema";
-import { environment } from "../environment";
+import { codeRequired } from "../middleware/code-required";
 import { processBoolean } from "../utils";
 
 const RsvpFormGuest = z.object({
@@ -34,72 +34,30 @@ const DEFAULT_INVITE_FORM_STATE: FormState = {
 
 export const rsvpRouter = Router();
 
-rsvpRouter.get(
-  "/",
-  asyncHandler(async (req, res) => {
-    const { authorized, invitationId } = req.session;
+rsvpRouter.use(codeRequired);
 
+rsvpRouter.get("/", asyncHandler(async (req, res) => {
+  const { invitationId } = req.session;
 
-    // If the user has not yet entered a valid code, render the code form.
-    if (!authorized) {
-      return renderCodeForm(req, res);
-    }
-
-    // If the user has not RSVP'd yet, render the confirmation form with the default state.
-    if (typeof invitationId === "undefined") {
-      return renderConfirmationForm(req, res);
-    }
-
-    const invitation = await getInvitationById(invitationId);
-
-    // If the invitation no longer exists, render the confirmation form with the default state.
-    if (!invitation) {
-      delete req.session.invitationId;
-      return renderConfirmationForm(req, res)
-    }
-  
-    // Render the RSVP confirmation form with the invitation.
-    return renderConfirmationForm(req, res, { formState: invitationToFormState(invitation) });
-  }),
-);
-
-rsvpRouter.post(
-  "/",
-  asyncHandler(async (req, res) => {
-    const { code } = req.body;
-
-    // If the user submitted a code, handle it.
-    if (typeof code === "string") {
-      return handleCodeSubmission(req, res, code);
-    }
-
-    // If the user submitted an RSVP, handle it.
-    return handleRsvpSubmission(req, res);
-  }),
-);
-
-function handleCodeSubmission(req: Request, res: Response, code: string) {
-  // Check if the submitted code matches our super secret passcode.
-  const isValid = code.toLowerCase() === environment.passcode.toLowerCase();
-
-  // If the code is valid show the RSVP confirmation page.
-  if (isValid) {
-    req.session.authorized = true;
+  // If the user has not RSVP'd yet, render the confirmation form with the default state.
+  if (typeof invitationId === "undefined") {
     return renderConfirmationForm(req, res);
   }
 
-  // Otherwise, render the code page with an error message.
-  return renderCodeForm(req, res, { invalidCode: true });
-}
+  const invitation = await getInvitationById(invitationId);
 
-
-async function handleRsvpSubmission(req: Request, res: Response) {
-  const { authorized, invitationId } = req.session;
-
-  // If the user is not authorized to submit an RSVP, render the code form again.
-  if (!authorized) {
-    return renderCodeForm(req, res, { sessionExpired: true });
+  // If the invitation no longer exists, render the confirmation form with the default state.
+  if (!invitation) {
+    delete req.session.invitationId;
+    return renderConfirmationForm(req, res)
   }
+
+  // Render the RSVP confirmation form with the invitation.
+  return renderConfirmationForm(req, res, { formState: invitationToFormState(invitation) });
+}));
+
+rsvpRouter.post("/", asyncHandler(async (req, res) => {
+  const { invitationId } = req.session;
 
   // Look up the original invitation from the session.
   const originalInvitation = typeof invitationId !== "undefined"
@@ -129,16 +87,7 @@ async function handleRsvpSubmission(req: Request, res: Response) {
     console.error("Error updating invitation:", error);
     return renderError(req, res);
   }
-}
-
-interface CodeFormParams {
-  invalidCode?: boolean;
-  sessionExpired?: boolean;
-}
-
-function renderCodeForm(req: Request, res: Response, params: CodeFormParams = {}) {
-  res.render("rsvp-code", params);
-}
+}));
 
 interface ConfirmationFormParams {
   emailTaken?: boolean;

@@ -1,16 +1,16 @@
 {% layout "layouts/base" %}
 
-{% block title %}RSVP{% endblock %}
+{% block title %}Code Required{% endblock %}
 
 {% block content %}
   <section class="grid margin-top-3xl margin-bottom-3xl" style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;">
-    <h1 class="font-size-4">Will you be there?</h1>
+    <h1 class="font-size-4">Secret code</h1>
     <p class="font-size-2">
-      Enter the secret code provided with your invitation.
+      Enter the secret code provided with your invitation to access this page.
     </p>
     {% if sessionExpired %}
       <p class="text-align-center" role="alert">
-        <span aria-label="">⚠️</span> Your session expired before you could RSVP. Please try again. <span aria-label="">⚠️</span>
+        <span aria-label="">⚠️</span> Your session expired before we could proccess your request. Please try again. <span aria-label="">⚠️</span>
       </p>
     {% endif %}
     {% if invalidCode %}

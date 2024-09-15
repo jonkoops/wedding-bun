@@ -6,6 +6,7 @@ import stringifyObject from "stringify-object";
 import { initializeDatabase } from "./db/db";
 import { environment } from "./environment";
 import { DrizzleStore } from "./misc/drizzle-store";
+import { photosRouter } from "./routes/photos";
 import { rsvpRouter } from "./routes/rsvp";
 
 // Initialize database
@@ -72,10 +73,10 @@ app.use(express.static("public"));
 app.get("/", (req, res) => res.render("index"));
 app.get("/the-wedding", (req, res) => res.render("the-wedding"));
 app.get("/travel-and-accommodations", (req, res) => res.render("travel-and-accommodations"));
-app.get("/photos", (req, res) => res.render("photos"));
 
 // Dynamic routes
 app.use("/rsvp", rsvpRouter);
+app.use("/photos", photosRouter);
 
 // Runtime client dependencies
 app.use(
