@@ -3,12 +3,24 @@
 {% block title %}Photos{% endblock %}
 
 {% block content %}
-  <h1>Photos</h1>
+  <section class="grid margin-bottom-3xl">
+    <div class="display-flex flex-direction-column justify-content-center text-align-center" style="--grid-column: col-start / span 12; --grid-column-md: col-start / span 6;">
+      <h1 class="margin-bottom-m text-fancy font-size-6">Photos</h1>
+    </div>
+    <img class="margin-inline-auto" style="--grid-column: col-start / span 12; --grid-column-md: col-start 7 / span 6;" src="/images/flowers.webp" alt="" width="595" height="579" role="presentation">
+  </section>
+  <section class="grid margin-bottom-3xl">
+    <h2 style="--grid-column: col-start / span 12;" class="font-size-4 text-align-center margin-bottom-m">Sharing is caring</h2>
+    <p style="--grid-column: col-start / span 12; --grid-column-md: col-start 3 / span 8;" class="font-size-2 text-align-center">
+      If you took any photos or videos during the wedding that are worthwhile to share, we would love to receive them!<br><br>
+      You can share your photos and view those taken by other attendees by clicking the button below, or by scanning the QR-code.<br><br>
+    </p>
+    <div class="display-flex margin-bottom-m" style="--grid-column: col-start / span 12;">
+      <a class="button margin-inline-auto" href="https://maps.app.goo.gl/r2Acwk4ect2MJvVH9" target="_blank">Add your photos</a><br>
+    </div>
+    <div style="--grid-column: col-start 2 / span 10; --grid-column-md: col-start 5 / span 4;">
+      {{ photosUrlSvg | raw }}
+    </div>
+  </section>
   <p>
-    If you took any photos or videos during the wedding that are worthwhile sharing, we would love to receive them!<br><br>
-    You can upload them in this Google Drive folder: <!-- TODO: Add link to Google Drive folder --><br><br>
-    You can upload directly from your computer or via the Google Drive app on your phone. Thank you!<br><br>
-    <!-- TODO: Add QR code for Google Drive folder -->
-    QR Code to the Google Folder
-  </p>
 {% endblock %}
