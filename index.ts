@@ -72,7 +72,7 @@ app.use(express.static("public"));
 // Static page routes
 app.get("/", (req, res) => res.render("index"));
 app.get("/the-wedding", (req, res) => res.render("the-wedding"));
-app.get("/travel-and-accommodations", (req, res) => res.render("travel-and-accommodations"));
+app.get("/travel-and-stay", (req, res) => res.render("travel-and-stay"));
 
 // Dynamic routes
 app.use("/rsvp", rsvpRouter);
