@@ -242,20 +242,26 @@ a {
   }
 }
 
-.display-flex { display: flex; }
+.button-bar {
+  display: grid;
+  grid-template-columns: auto;
+  gap: var(--space-m);
 
-.flex-wrap { flex-wrap: wrap; }
+  @media (min-width: 768px) {
+    & {
+      grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+    }
+  }
+
+  .button {
+    align-content: center;
+  }
+}
+
+.display-flex { display: flex; }
 
 .flex-direction-column { flex-direction: column; }
 .flex-direction-row { flex-direction: row; }
-
-.flex-direction-row-on-md {
-  @media (min-width: 768px) {
-    & {
-      flex-direction: row;
-    }
-  }
-}
 
 .gap-2xs { gap: var(--space-2xs); }
 .gap-xs { gap: var(--space-xs); }
