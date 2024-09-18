@@ -231,6 +231,17 @@ a {
   width: 100%;
 }
 
+.alert {
+  display: flex;
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: var(--space-xs);
+
+  .alert-icon {
+    margin-block: auto;
+    margin-right: var(--space-xs);
+  }
+}
+
 .display-flex { display: flex; }
 
 .flex-wrap { flex-wrap: wrap; }

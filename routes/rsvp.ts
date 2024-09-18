@@ -72,17 +72,26 @@ rsvpRouter.post("/", asyncHandler(async (req, res) => {
 
     // Check if the email is already in use by another invitation.
     if (conflictingInvitation && conflictingInvitation.id !== originalInvitation?.id) {
-      return renderConfirmationForm(req, res, { emailTaken: true, formState: formState });
+      return renderConfirmationForm(req, res, {
+        emailTaken: true,
+        formState
+      });
     }
 
-    const updatedInvitationId = originalInvitation
+    const updatedInvitationId = typeof originalInvitation !== 'undefined'
       ? await updateInvitation({ ...parsedFormState, id: originalInvitation.id })
       : await createInvitation(parsedFormState);
 
     // Store the invitation ID in the session so it can be retrieved later.
     req.session.invitationId = updatedInvitationId;
 
-    return renderConfirmationForm(req, res, { formState: invitationToFormState(parsedFormState) });
+    const didCreate = typeof originalInvitation === 'undefined';
+
+    return renderConfirmationForm(req, res, {
+      didCreate: didCreate,
+      didUpdate: !didCreate,
+      formState: invitationToFormState(parsedFormState)
+    });
   } catch (error) {
     console.error("Error updating invitation:", error);
     return renderError(req, res);
@@ -90,6 +99,8 @@ rsvpRouter.post("/", asyncHandler(async (req, res) => {
 }));
 
 interface ConfirmationFormParams {
+  didCreate?: boolean;
+  didUpdate?: boolean;
   emailTaken?: boolean;
   formState: FormState;
 }

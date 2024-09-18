@@ -9,14 +9,16 @@
       Enter the secret code provided with your invitation to access this page.
     </p>
     {% if sessionExpired %}
-      <p class="text-align-center" role="alert">
-        <span aria-label="">⚠️</span> Your session expired before we could proccess your request. Please try again. <span aria-label="">⚠️</span>
-      </p>
+      <div class="alert" role="alert">
+        <div class="alert-icon" aria-label="">⚠️</div>
+        <p class="alert-text">Your session expired before we could proccess your request. Please try again.</p>
+      </div>
     {% endif %}
     {% if invalidCode %}
-      <p id="code-error" class="text-align-center" role="alert">
-        <span aria-label="">⚠️</span> Invalid code, please provide the code on your invitation. <span aria-label="">⚠️</span>
-      </p>
+      <div id="code-error" class="alert" role="alert">
+        <div class="alert-icon" aria-label="">⚠️</div>
+        <p class="alert-text">Invalid code, please provide the code on your invitation.</p>
+      </div>
     {% endif %}
     <form method="post">
       <div class="margin-bottom-m">

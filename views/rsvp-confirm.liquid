@@ -18,9 +18,22 @@
     }">
     <h1 class="font-size-4">Will you be there?</h1>
     {% if emailTaken %}
-      <p class="text-align-center" role="alert">
-        <span aria-label="">⚠️</span> It looks like you've already RSVP'd. If you need to make changes, please use the link in your e-mail. <span aria-label="">⚠️</span>
-      </p>
+      <div class="alert" role="alert">
+        <div class="alert-icon" aria-label="">⚠️</div>
+        <p class="alert-text">It looks like you've already RSVP'd. If you need to make changes, please use the link in your e-mail.</p>
+      </div>
+    {% endif %}
+    {% if didCreate %}
+      <div class="alert" role="alert">
+        <div class="alert-icon" aria-label="">🎉</div>
+        <p class="alert-text">Your RSVP has been confirmed!</p>
+      </div>
+    {% endif %}
+    {% if didUpdate %}
+      <div class="alert" role="alert">
+        <div class="alert-icon" aria-label="">✅</div>
+        <p class="alert-text">Your RSVP has been updated.</p>
+      </div>
     {% endif %}
     <section>
       <h2 class="font-size-3 margin-bottom-m">Attendance</h2>
