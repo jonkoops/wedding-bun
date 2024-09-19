@@ -263,6 +263,12 @@ a {
 .flex-direction-column { flex-direction: column; }
 .flex-direction-row { flex-direction: row; }
 
+.flex-direction-row-on-md {
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
+}
+
 .gap-2xs { gap: var(--space-2xs); }
 .gap-xs { gap: var(--space-xs); }
 .gap-s { gap: var(--space-s); }
