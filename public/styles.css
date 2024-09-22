@@ -159,6 +159,10 @@ a {
   padding-inline: var(--grid-gutter);
 }
 
+.escape-page-gutter {
+  margin-inline: calc(var(--grid-gutter) * -1);
+}
+
 .nav-toggle {
   /* Hide toggle on desktop */
   @media (min-width: 768px) {
@@ -255,6 +259,26 @@ a {
 
   .button {
     align-content: center;
+  }
+}
+
+.backdrop {
+  position: relative;
+  overflow: hidden;
+
+  .backdrop__image {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .backdrop__text {
+    margin: var(--space-xl);
+    padding: var(--space-m);
+    background-color: color-mix(in srgb, var(--color-base) 60%, transparent);
   }
 }
 
