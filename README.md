@@ -1,6 +1,6 @@
 # Jon & Gabriella's Wedding Website
 
-This project is the website for the wedding of me and my lovely fiancé Gabriella. It includes a basic system for handling invitations and people's RSVP, allowing them to respond and update their status at a later point. This site is build using [Bun](https://bun.sh/), mostly because it is more convienient to use than Node.js when using TypeScript.
+This project is the website for the wedding of me and my lovely fiancé Gabriella. It includes a basic system for handling RSVPs. This site is build using [Bun](https://bun.sh/), mostly because it is more convienient to use than Node.js when using TypeScript.
 
 ## Running the project
 

@@ -47,7 +47,7 @@ app.use(
       httpOnly: true,
       // Expire after 10 minutes of inactivity
       maxAge: 10 * 60 * 1000,
-      sameSite: "strict",
+      sameSite: "lax",
       secure: environment.isProduction,
     },
   }),
