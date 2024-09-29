@@ -1,8 +1,10 @@
 import { Router, type Request, type Response } from "express";
 import { z } from "zod";
+
 import { createInvitation, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
 import type { Guest, UnidentifiedInvitation } from "../db/schema";
 import { codeRequired } from "../middleware/code-required";
+import { sendRsvpConfirmedMail } from "../misc/email";
 import { processBoolean } from "../utils";
 
 const RsvpFormGuest = z.object({
@@ -85,6 +87,10 @@ rsvpRouter.post("/", async (req, res) => {
     req.session.invitationId = updatedInvitationId;
 
     const didCreate = typeof originalInvitation === 'undefined';
+
+    if (didCreate) {
+      await sendRsvpConfirmedMail(parsedFormState);
+    }
 
     return renderConfirmationForm(req, res, {
       didCreate: didCreate,

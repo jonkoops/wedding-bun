@@ -1,0 +1,19 @@
+{% layout "layouts/base-email" %}
+
+{% block title %}RSVP Confirmed{% endblock %}
+
+{% block content %}
+  <h1>RSVP Confirmed!</h1>
+  <p>
+    Hi {{ primaryGuest.firstName }},<br>
+    <br>
+    {% if status == "accepted" %}
+      Your RSVP has been confirmed, we look forward to seeing you at the wedding!<br>
+    {% endif %}
+    {% if status == "rejected" %}
+      Your RSVP has been confirmed, sorry you couldn't make it.<br>
+    {% endif %}
+    <br>
+    Jon &amp; Gabriella
+  </p>
+{% endblock %}

@@ -1,11 +1,10 @@
 import express from "express";
 import session from "express-session";
-import { Liquid } from "liquidjs";
-import stringifyObject from "stringify-object";
 
 import { initializeDatabase } from "./db/db";
 import { environment } from "./environment";
 import { DrizzleStore } from "./misc/drizzle-store";
+import { liquid } from "./misc/liquid";
 import { photosRouter } from "./routes/photos";
 import { rsvpRouter } from "./routes/rsvp";
 
@@ -16,16 +15,7 @@ await initializeDatabase();
 const app = express();
 
 // Configure view engine
-const liquid = new Liquid({
-  extname: ".liquid",
-  outputEscape: "escape",
-  cache: environment.isProduction,
-});
-
-liquid.registerFilter("stringifyObject", (value) => stringifyObject(value));
-
 app.engine("liquid", liquid.express());
-app.set("views", "./views");
 app.set("view engine", "liquid");
 
 // Trust the first proxy when running in production, needed to enable secure cookies.
