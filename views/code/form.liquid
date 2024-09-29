@@ -25,6 +25,11 @@
         <label class="font-size-1" for="code">Secret code:</label><br>
         <input class="text-control" type="password" id="code" name="code" autocomplete="off" required{% if invalidCode %} aria-invalid="true" aria-errormessage="code-error"{% endif %}>
       </div>
+      {% if isRsvpPage %}
+        <small>
+          Already RSVP'd? Use the link from the e-mail we sent you to change your response.<br><br>
+        </small>
+      {% endif %}
       <button class="button" type="submit">Submit</button>
     </form>
   </section>

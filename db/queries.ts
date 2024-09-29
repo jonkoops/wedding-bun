@@ -11,6 +11,10 @@ export function getInvitationByEmail(email: string): Promise<Invitation | undefi
   return db.query.invitations.findFirst({ where: eq(invitations.email, email) });
 }
 
+export function getInvitationByCode(code: string): Promise<Invitation | undefined> {
+  return db.query.invitations.findFirst({ where: eq(invitations.code, code) });
+}
+
 export async function createInvitation(invitation: UnidentifiedInvitation): Promise<number> {
   const result = await db.insert(invitations).values(invitation).returning({ id: invitations.id });
   return result[0]!.id;

@@ -1,6 +1,6 @@
 import { createTransport } from "nodemailer";
 
-import type { UnidentifiedInvitation } from "../db/schema";
+import type { Invitation } from "../db/schema";
 import { environment } from "../environment";
 import { liquid } from "./liquid";
 
@@ -13,7 +13,7 @@ const transporter = createTransport({
   }
 });
 
-export async function sendRsvpConfirmedMail(invite: UnidentifiedInvitation) {
+export async function sendRsvpConfirmedMail(invite: Invitation) {
   const html = await renderRsvpConfirmed(invite);
 
   await transporter.sendMail({
@@ -25,6 +25,6 @@ export async function sendRsvpConfirmedMail(invite: UnidentifiedInvitation) {
 }
 
 
-function renderRsvpConfirmed(invite: UnidentifiedInvitation) {
+function renderRsvpConfirmed(invite: Invitation) {
   return liquid.renderFile("email/rsvp-confirmed", invite);
 }

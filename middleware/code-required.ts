@@ -51,5 +51,10 @@ interface CodeFormParams {
 }
 
 function renderCodeForm(req: Request, res: Response, params: CodeFormParams = {}) {
-  res.render("code/form", params);
+  const isRsvpPage = req.baseUrl === "/rsvp";
+
+  res.render("code/form", {
+    ...params,
+    isRsvpPage
+  });
 }

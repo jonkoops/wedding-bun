@@ -1,7 +1,7 @@
 import { Router, type Request, type Response } from "express";
 import { z } from "zod";
 
-import { createInvitation, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
+import { createInvitation, getInvitationByCode, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
 import type { Guest, UnidentifiedInvitation } from "../db/schema";
 import { codeRequired } from "../middleware/code-required";
 import { sendRsvpConfirmedMail } from "../misc/email";
@@ -80,7 +80,7 @@ rsvpRouter.post("/", async (req, res) => {
     }
 
     const updatedInvitationId = typeof originalInvitation !== 'undefined'
-      ? await updateInvitation({ ...parsedFormState, id: originalInvitation.id })
+      ? await updateInvitation({ ...originalInvitation, ...parsedFormState })
       : await createInvitation(parsedFormState);
 
     // Store the invitation ID in the session so it can be retrieved later.
@@ -89,7 +89,15 @@ rsvpRouter.post("/", async (req, res) => {
     const didCreate = typeof originalInvitation === 'undefined';
 
     if (didCreate) {
-      await sendRsvpConfirmedMail(parsedFormState);
+      const createdInvitation = await getInvitationById(updatedInvitationId);
+
+      // Should never happen, but let's handle it anyways.
+      if (!createdInvitation) {
+        console.error("Could not send RSVP mail, no invitation found.");
+        return renderError(req, res);
+      }
+
+      await sendRsvpConfirmedMail(createdInvitation);
     }
 
     return renderConfirmationForm(req, res, {
@@ -101,6 +109,31 @@ rsvpRouter.post("/", async (req, res) => {
     console.error("Error updating invitation:", error);
     return renderError(req, res);
   }
+});
+
+rsvpRouter.get("/:code", async (req, res) => {
+  const code = req.params.code;
+  
+  if (typeof code !== "string") {
+    return renderError(req, res);
+  }
+  
+  let invite;
+
+  try {
+    invite = await getInvitationByCode(code);
+  } catch (error) {
+    return renderError(req, res);
+  }
+
+  if (typeof invite === "undefined") {
+    return renderError(req, res);
+  }
+
+  req.session.authorized = true;
+  req.session.invitationId = invite.id;
+
+  res.redirect(301, "/rsvp");
 });
 
 interface ConfirmationFormParams {
@@ -119,7 +152,9 @@ function renderConfirmationForm(
 }
 
 function renderError(req: Request, res: Response) {
-  res.render("rsvp-error");
+  res
+    .status(500)
+    .render("rsvp-error");
 }
 
 function formStateToInvitation(formState: FormState): UnidentifiedInvitation {

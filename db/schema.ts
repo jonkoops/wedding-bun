@@ -1,5 +1,5 @@
 import type { InferInsertModel, InferSelectModel } from "drizzle-orm";
-import { json, pgEnum, pgTable, serial, text } from "drizzle-orm/pg-core";
+import { json, pgEnum, pgTable, serial, text, uuid } from "drizzle-orm/pg-core";
 import type { SessionData } from "express-session";
 
 export interface Guest {
@@ -16,6 +16,7 @@ export const invitations = pgTable("invitations", {
   notes: text("notes").notNull(),
   primaryGuest: json("primaryGuest").$type<Guest>().notNull(),
   guests: json("guests").$type<Guest[]>().notNull(),
+  code: uuid("code").defaultRandom().notNull(),
 });
 
 export type Invitation = InferSelectModel<typeof invitations>;
