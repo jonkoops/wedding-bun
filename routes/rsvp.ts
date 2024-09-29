@@ -1,5 +1,4 @@
 import { Router, type Request, type Response } from "express";
-import asyncHandler from "express-async-handler";
 import { z } from "zod";
 import { createInvitation, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
 import type { Guest, UnidentifiedInvitation } from "../db/schema";
@@ -36,7 +35,7 @@ export const rsvpRouter = Router();
 
 rsvpRouter.use(codeRequired);
 
-rsvpRouter.get("/", asyncHandler(async (req, res) => {
+rsvpRouter.get("/", async (req, res) => {
   const { invitationId } = req.session;
 
   // If the user has not RSVP'd yet, render the confirmation form with the default state.
@@ -54,9 +53,9 @@ rsvpRouter.get("/", asyncHandler(async (req, res) => {
 
   // Render the RSVP confirmation form with the invitation.
   return renderConfirmationForm(req, res, { formState: invitationToFormState(invitation) });
-}));
+});
 
-rsvpRouter.post("/", asyncHandler(async (req, res) => {
+rsvpRouter.post("/", async (req, res) => {
   const { invitationId } = req.session;
 
   // Look up the original invitation from the session.
@@ -96,7 +95,7 @@ rsvpRouter.post("/", asyncHandler(async (req, res) => {
     console.error("Error updating invitation:", error);
     return renderError(req, res);
   }
-}));
+});
 
 interface ConfirmationFormParams {
   didCreate?: boolean;

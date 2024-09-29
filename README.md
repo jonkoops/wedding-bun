@@ -13,5 +13,5 @@ podman run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -p 5432:54
 ```
 
 ```bash
-bun run dev
+bun dev
 ```
