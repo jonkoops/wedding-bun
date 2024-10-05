@@ -59,8 +59,12 @@
       </div>
       <div>
         <label class="font-size-1" for="email">Your e-mail address</label><br>
-        <small>We'll send you a link to get back to your RSVP in case you change your mind.</small>
-        <input class="text-control" id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required><br>
+        {% if isNew %}
+          <small>We'll send you a link to get back to your RSVP in case you change your mind.</small>
+        {% else %}
+          <small>Since your RSVP has been confirmed you can no longer change your e-mail address.</small>
+        {% endif %}
+        <input class="text-control" id="email" type="email" name="email" x-model="formState.email" autocomplete="email" required{% unless isNew %} readonly disabled{% endunless %}><br>
       </div>
     </section>
     <section x-show="formState.attending">

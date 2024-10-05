@@ -54,7 +54,7 @@ rsvpRouter.get("/", async (req, res) => {
   }
 
   // Render the RSVP confirmation form with the invitation.
-  return renderConfirmationForm(req, res, { formState: invitationToFormState(invitation) });
+  return renderConfirmationForm(req, res, { isNew: false, formState: invitationToFormState(invitation) });
 });
 
 rsvpRouter.post("/", async (req, res) => {
@@ -74,6 +74,7 @@ rsvpRouter.post("/", async (req, res) => {
     // Check if the email is already in use by another invitation.
     if (conflictingInvitation && conflictingInvitation.id !== originalInvitation?.id) {
       return renderConfirmationForm(req, res, {
+        isNew: true,
         emailTaken: true,
         formState
       });
@@ -104,6 +105,7 @@ rsvpRouter.post("/", async (req, res) => {
     await sendRsvpDetailsMail(updatedInvitation, didCreate);
 
     return renderConfirmationForm(req, res, {
+      isNew: false,
       didCreate: didCreate,
       didUpdate: !didCreate,
       formState: invitationToFormState(parsedFormState)
@@ -140,6 +142,7 @@ rsvpRouter.get("/:code", async (req, res) => {
 });
 
 interface ConfirmationFormParams {
+  isNew: boolean;
   didCreate?: boolean;
   didUpdate?: boolean;
   emailTaken?: boolean;
@@ -149,7 +152,7 @@ interface ConfirmationFormParams {
 function renderConfirmationForm(
   req: Request,
   res: Response,
-  params: ConfirmationFormParams = { formState: DEFAULT_INVITE_FORM_STATE },
+  params: ConfirmationFormParams = { isNew: true, formState: DEFAULT_INVITE_FORM_STATE },
 ) {
   res.render("rsvp-confirm", params);
 }
