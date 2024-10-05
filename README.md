@@ -13,13 +13,13 @@ bun install
 Since a Postgres database is required you'll have to start a server. I am using [Podman](https://podman.io/), but you can run the database any way you like:
 
 ```sh
-podman run -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres
+podman run --rm -e POSTGRES_PASSWORD=mysecretpassword -p 5432:5432 postgres
 ```
 
 A SMTP server is also required, during development you can use something like [MailDev](https://github.com/maildev/maildev):
 
-```
-podman run -e MAILDEV_OUTGOING_USER=someuser -e MAILDEV_OUTGOING_PASS=nobodyknows -p 1080:1080 -p 1025:1025 maildev/maildev
+```sh
+podman run --rm -e MAILDEV_OUTGOING_USER=someuser -e MAILDEV_OUTGOING_PASS=nobodyknows -p 1080:1080 -p 1025:1025 maildev/maildev
 ```
 
 Go to http://localhost:1080 to see the Web UI for MailDev.
