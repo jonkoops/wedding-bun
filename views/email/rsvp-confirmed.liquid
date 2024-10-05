@@ -5,18 +5,18 @@
 {% block content %}
   <h1>RSVP Confirmed!</h1>
   <p>
-    Hi {{ primaryGuest.firstName }},<br>
+    Hi {{ invite.primaryGuest.firstName }},<br>
     <br>
-    {% if status == "accepted" %}
+    {% if invite.status == "accepted" %}
       Your RSVP has been confirmed, we look forward to seeing you at the wedding!<br>
     {% endif %}
-    {% if status == "rejected" %}
+    {% if invite.status == "rejected" %}
       Your RSVP has been confirmed, we're sorry you couldn't make it.<br>
     {% endif %}
     <br>
     If you change your mind or want to update your RSVP you can use the link below to get back.<br>
     <br>
-    <a href="https://gabriellajon.wedding/rsvp/{{ code }}">Update your RSVP</a><br>
+    <a href="{{ host }}/rsvp/{{ invite.code }}">Update your RSVP</a><br>
     <br>
     Jon &amp; Gabriella
   </p>

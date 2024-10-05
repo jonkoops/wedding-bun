@@ -1,4 +1,5 @@
 const {
+  HOST,
   DATABASE_URL,
   SESSION_SECRET,
   PASSCODE,
@@ -10,6 +11,10 @@ const {
   SMTP_PASSWORD,
   EMAIL_FROM,
 } = process.env;
+
+if (!HOST) {
+  throw new Error("The 'HOST' environment variable must be set.");
+}
 
 // Check environment variables
 if (!DATABASE_URL) {
@@ -55,6 +60,7 @@ if (!EMAIL_FROM) {
 }
 
 export const environment = {
+  host: HOST,
   databaseUrl: DATABASE_URL,
   sessionSecret: SESSION_SECRET,
   passcode: PASSCODE,

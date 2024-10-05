@@ -25,6 +25,14 @@ export async function sendRsvpConfirmedMail(invite: Invitation) {
 }
 
 
+interface RsvpConfirmedParams {
+  host: string;
+  invite: Invitation;
+}
+
 function renderRsvpConfirmed(invite: Invitation) {
-  return liquid.renderFile("email/rsvp-confirmed", invite);
+  return liquid.renderFile("email/rsvp-confirmed", {
+    host: environment.host,
+    invite,
+  });
 }
