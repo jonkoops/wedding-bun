@@ -4,7 +4,7 @@ import { z } from "zod";
 import { createInvitation, getInvitationByCode, getInvitationByEmail, getInvitationById, updateInvitation } from "../db/queries";
 import type { Guest, UnidentifiedInvitation } from "../db/schema";
 import { codeRequired } from "../middleware/code-required";
-import { sendRsvpConfirmedMail } from "../misc/email";
+import { sendRsvpConfirmedMail, sendRsvpDetailsMail } from "../misc/email";
 import { processBoolean } from "../utils";
 
 const RsvpFormGuest = z.object({
@@ -87,18 +87,21 @@ rsvpRouter.post("/", async (req, res) => {
     req.session.invitationId = updatedInvitationId;
 
     const didCreate = typeof originalInvitation === 'undefined';
+    const updatedInvitation = await getInvitationById(updatedInvitationId);
 
-    if (didCreate) {
-      const createdInvitation = await getInvitationById(updatedInvitationId);
-
-      // Should never happen, but let's handle it anyways.
-      if (!createdInvitation) {
-        console.error("Could not send RSVP mail, no invitation found.");
-        return renderError(req, res);
-      }
-
-      await sendRsvpConfirmedMail(createdInvitation);
+    // Should never happen, but let's handle it anyways.
+    if (!updatedInvitation) {
+      console.error("Could not send RSVP mail, no invitation found.");
+      return renderError(req, res);
     }
+
+    // Send the RSVP confirmation email to the guest if the invitation was created.
+    if (didCreate) {
+      await sendRsvpConfirmedMail(updatedInvitation);
+    }
+
+    // Send the RSVP details email to the 'back office'.
+    await sendRsvpDetailsMail(updatedInvitation, didCreate);
 
     return renderConfirmationForm(req, res, {
       didCreate: didCreate,

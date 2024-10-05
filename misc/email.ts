@@ -24,15 +24,28 @@ export async function sendRsvpConfirmedMail(invite: Invitation) {
   });
 }
 
-
-interface RsvpConfirmedParams {
-  host: string;
-  invite: Invitation;
-}
-
 function renderRsvpConfirmed(invite: Invitation) {
   return liquid.renderFile("email/rsvp-confirmed", {
     host: environment.host,
     invite,
+  });
+}
+
+export async function sendRsvpDetailsMail(invite: Invitation, didCreate: boolean) {
+  const html = await renderRsvpDetails(invite, didCreate);
+
+  await transporter.sendMail({
+    from: environment.emailFrom,
+    to: invite.email,
+    subject: "RSVP Details",
+    html,
+  });
+}
+
+function renderRsvpDetails(invite: Invitation, didCreate: boolean) {
+  return liquid.renderFile("email/rsvp-details", {
+    host: environment.host,
+    invite,
+    didCreate,
   });
 }

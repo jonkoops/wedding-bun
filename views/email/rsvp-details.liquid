@@ -1,0 +1,58 @@
+{% layout "layouts/base-email" %}
+
+{% block title %}RSVP {% if didCreate %}Submitted{% else %}Updated{% endif %}{% endblock %}
+
+{% block content %}
+  <style>
+    th, td {
+      padding: .25rem 1rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    ul {
+      margin: 0;
+      padding: 0;
+      list-style-position: inside;
+    }
+  </style>
+  <h1>RSVP {% if didCreate %}Submitted{% else %}Updated{% endif %}</h1>
+  <p>
+    {{ invite.primaryGuest.firstName }} {{ invite.primaryGuest.lastName }} {% if didCreate %}submitted{% else %}updated{% endif %} their RSVP with the following details:<br>
+  </p>
+  <table>
+    <tbody>
+      <tr>
+        <th scope="row">Attending</th>
+        <td>{% if invite.status == "accepted" %}Yes{% else %}No{% endif %}</td>
+      </tr>
+      <tr>
+        <th scope="row">Primary guest</th>
+        <td>{{ invite.primaryGuest.firstName }} {{ invite.primaryGuest.lastName }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Email</th>
+        <td>{{ invite.email }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Plus ones</th>
+        <td>
+          <ul>
+            {% for guest in invite.guests %}
+              <li>{{ guest.firstName }} {{ guest.lastName }}</li>
+            {% endfor %}
+          </ul>
+        </td>
+      </tr>
+      <tr>
+        <th scope="row">Notes</th>
+        <td>{{ invite.notes }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <p>
+    If you want view or update their RSVP you can use the link below.<br>
+    <br>
+    <a href="{{ host }}/rsvp/{{ invite.code }}">View RSVP</a><br>
+  </p>
+{% endblock %}

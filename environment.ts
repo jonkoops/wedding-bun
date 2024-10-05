@@ -10,6 +10,7 @@ const {
   SMTP_USER,
   SMTP_PASSWORD,
   EMAIL_FROM,
+  EMAIL_BACKOFFICE
 } = process.env;
 
 if (!HOST) {
@@ -59,6 +60,10 @@ if (!EMAIL_FROM) {
   throw new Error("The 'EMAIL_FROM' environment variable must be set.");
 }
 
+if (!EMAIL_BACKOFFICE) {
+  throw new Error("The 'EMAIL_BACKOFFICE' environment variable must be set.");
+}
+
 export const environment = {
   host: HOST,
   databaseUrl: DATABASE_URL,
@@ -70,5 +75,6 @@ export const environment = {
   smtpUser: SMTP_USER,
   smtpPassword: SMTP_PASSWORD,
   emailFrom: EMAIL_FROM,
+  emailBackoffice: EMAIL_BACKOFFICE,
   isProduction: NODE_ENV === "production",
 };
