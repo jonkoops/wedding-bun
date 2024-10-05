@@ -36,7 +36,7 @@ export async function sendRsvpDetailsMail(invite: Invitation, didCreate: boolean
 
   await transporter.sendMail({
     from: environment.emailFrom,
-    to: invite.email,
+    to: environment.emailBackoffice,
     subject: "RSVP Details",
     html,
   });
