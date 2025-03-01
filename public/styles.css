@@ -369,6 +369,8 @@ a {
 .font-size-5 { font-size: var(--step-5); }
 .font-size-6 { font-size: var(--step-6); }
 
+.font-weight-bold { font-weight: bold; }
+
 .text-align-center { text-align: center; }
 
 .text-transform-uppercase { text-transform: uppercase; }
